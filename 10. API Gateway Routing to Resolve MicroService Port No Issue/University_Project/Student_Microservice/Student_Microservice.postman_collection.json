@@ -1,0 +1,136 @@
+{
+  "info": {
+    "_postman_id": "2d9e5675-45b7-4b18-95e7-e478dc91f619",
+    "name": "Student Microservice",
+    "description": "Requests for testing the Student Microservice directly and through the API Gateway.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "studentServiceUrl",
+      "value": "http://localhost:5002",
+      "type": "string"
+    },
+    {
+      "key": "apiGatewayUrl",
+      "value": "http://localhost:4000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Direct Student Service",
+      "item": [
+        {
+          "name": "Student Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{studentServiceUrl}}/studentlogin"
+          }
+        },
+        {
+          "name": "View Assignment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{studentServiceUrl}}/viewassignment"
+          }
+        },
+        {
+          "name": "Update Student Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Student\",\n  \"email\": \"student@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{studentServiceUrl}}/studentupdateprofile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Through API Gateway",
+      "item": [
+        {
+          "name": "Student Login via Gateway",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{apiGatewayUrl}}/student/studentlogin"
+          }
+        },
+        {
+          "name": "View Assignment via Gateway",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{apiGatewayUrl}}/student/viewassignment"
+          }
+        },
+        {
+          "name": "Update Student Profile via Gateway",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Student\",\n  \"email\": \"student@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{apiGatewayUrl}}/student/studentupdateprofile"
+          }
+        }
+      ]
+    }
+  ]
+}

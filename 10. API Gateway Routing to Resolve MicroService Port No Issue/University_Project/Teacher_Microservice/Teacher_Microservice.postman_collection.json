@@ -1,0 +1,136 @@
+{
+  "info": {
+    "_postman_id": "10768303-87a0-4591-80f3-2b03c9e85830",
+    "name": "Teacher Microservice",
+    "description": "Requests for testing the Teacher Microservice directly and through the API Gateway.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "teacherServiceUrl",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "apiGatewayUrl",
+      "value": "http://localhost:4000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Direct Teacher Service",
+      "item": [
+        {
+          "name": "Add Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"API Gateway Exercise\",\n  \"description\": \"Complete the microservice routing exercise\",\n  \"dueDate\": \"2026-09-15\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{teacherServiceUrl}}/addassignment"
+          }
+        },
+        {
+          "name": "Search Student",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{teacherServiceUrl}}/searchstudent"
+          }
+        },
+        {
+          "name": "Remove Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignmentId\": \"assignment-001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{teacherServiceUrl}}/removeassignment"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Through API Gateway",
+      "item": [
+        {
+          "name": "Add Assignment via Gateway",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"API Gateway Exercise\",\n  \"description\": \"Complete the microservice routing exercise\",\n  \"dueDate\": \"2026-09-15\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{apiGatewayUrl}}/teacher/addassignment"
+          }
+        },
+        {
+          "name": "Search Student via Gateway",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{apiGatewayUrl}}/teacher/searchstudent"
+          }
+        },
+        {
+          "name": "Remove Assignment via Gateway",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignmentId\": \"assignment-001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{apiGatewayUrl}}/teacher/removeassignment"
+          }
+        }
+      ]
+    }
+  ]
+}

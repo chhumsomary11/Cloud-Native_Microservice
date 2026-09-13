@@ -1,0 +1,12 @@
+import * as http from 'http';
+export interface ProxyServer extends http.Server {
+    authenticate?: ((req: http.IncomingMessage) => boolean | Promise<boolean>) | 'negotiate';
+    localAddress?: string;
+}
+/**
+ * Sets up an `http.Server` or `https.Server` instance with the necessary
+ * "request" and "connect" event listeners in order to make the server act
+ * as an HTTP proxy.
+ */
+export declare function createProxy(server?: http.Server): ProxyServer;
+//# sourceMappingURL=proxy.d.ts.map
