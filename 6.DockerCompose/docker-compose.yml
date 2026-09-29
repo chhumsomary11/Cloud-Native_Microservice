@@ -1,0 +1,22 @@
+services:
+  registration-service:
+    build:
+      context: ./registration-service
+    image: danan22/registration-service:v1
+    container_name: registration-container
+    ports:
+      - "5001:5001"
+    env_file:
+      - ./registration-service/.env
+    restart: unless-stopped
+
+  login-service:
+    build:
+      context: ./login-service
+    image: danan22/login-service:v1
+    container_name: login-container
+    ports:
+      - "5002:5002"
+    env_file:
+      - ./login-service/.env
+    restart: unless-stopped
