@@ -1,0 +1,50 @@
+services:
+  #Note: Redis container for caching
+  redis:
+    container_name: redis_container
+    image: "redislabs/redismod"
+    ports:
+      - "6379:6379"
+    restart: on-failure
+  #Note: Server 1 and 2 use same code base, but are running on different ports. This is to simulate two different servers.
+  # Note: Concept of load balancing is to distribute the load between multiple servers. In this case, we have two servers running on different ports. The load balancer will distribute the requests between these two servers.
+  webserver1:
+    container_name: webserver1_container
+    build:
+      context: ./webserver
+      dockerfile: Dockerfile
+    # hostname gives a container its internal machine name inside the Docker network.
+    # Without hostname Docker automatically assigns a random hostname
+    hostname: web1
+    ports:
+      - "81:5000"
+    restart: on-failure
+    depends_on:
+      - redis
+
+  webserver2:
+    container_name: webserver2_container
+    build:
+      context: ./webserver
+      dockerfile: Dockerfile
+    # hostname gives a container its internal machine name inside the Docker network.
+    # Without hostname Docker automatically assigns a random hostname
+    hostname: web2
+    ports:
+      - "82:5000"
+    restart: on-failure
+    depends_on:
+      - redis
+
+  #Note: Load Balancer
+  nginx:
+    container_name: nginx_container
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: on-failure
+    depends_on:
+      - webserver1
+      - webserver2

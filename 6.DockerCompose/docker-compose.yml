@@ -1,9 +1,10 @@
 services:
   registration-service:
+    container_name: registration-container
+    image: danan22/registration-service:v1
+
     build:
       context: ./registration-service
-    image: danan22/registration-service:v1
-    container_name: registration-container
     ports:
       - "5001:5001"
     env_file:
