@@ -2,19 +2,13 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
-const db_password = process.env.db_password;
 
-if (!db_password) {
-  throw new Error("DB_PASSWORD is missing from the .env file");
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI is missing from the .env file");
 }
 
-const encodedPassword = encodeURIComponent(db_password);
-
 // Database Connection URL
-// const uri = `mongodb+srv://dananloeung_db_user:${db_password}@cluster0.qsl5lfo.mongodb.net/?appName=Cluster0`;
-const uri =
-  `mongodb+srv://dananloeung_db_user:${encodedPassword}` +
-  `@cluster0.qsl5lfo.mongodb.net/AUPP_Registration?appName=Cluster0`;
+const uri = process.env.MONGODB_URI;
 // const uri = `mongodb://dananloeung_db_user:${db_password}@ac-irevfzj-shard-00-00.jh094ab.mongodb.net:27017,ac-irevfzj-shard-00-01.jh094ab.mongodb.net:27017,ac-irevfzj-shard-00-02.jh094ab.mongodb.net:27017/AUPP_Registration?ssl=true&replicaSet=atlas-u04hq6-shard-0&authSource=admin&appName=Cluster0`;
 
 const clientOptions = {

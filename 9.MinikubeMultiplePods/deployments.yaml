@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-login-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-login
+  template:
+    metadata:
+      labels:
+        app: gateway-login
+    spec:
+      containers:
+        - name: api-gateway
+          image: danan22/api-gateway:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+            - name: LOGIN_SERVICE_URL
+              value: "http://localhost:5002"
+            - name: REGISTRATION_SERVICE_URL
+              value: "http://registration-service:5001"
+            - name: JWT_SECRETE
+              valueFrom:
+                secretKeyRef:
+                  name: identity-secrets
+                  key: JWT_SECRETE
+
+        - name: login-service
+          image: danan22/login-service:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5002
+          env:
+            - name: PORT
+              value: "5002"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: identity-secrets
+                  key: MONGODB_URI
+            - name: JWT_SECRETE
+              valueFrom:
+                secretKeyRef:
+                  name: identity-secrets
+                  key: JWT_SECRETE
+            - name: JWT_EXPIRES_IN
+              valueFrom:
+                secretKeyRef:
+                  name: identity-secrets
+                  key: JWT_EXPIRES_IN
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registration-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registration
+  template:
+    metadata:
+      labels:
+        app: registration
+    spec:
+      containers:
+        - name: registration-service
+          image: danan22/registration-service:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5001
+          env:
+            - name: PORT
+              value: "5001"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: identity-secrets
+                  key: MONGODB_URI

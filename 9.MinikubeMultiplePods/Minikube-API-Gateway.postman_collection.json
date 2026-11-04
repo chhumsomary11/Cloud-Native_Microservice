@@ -1,0 +1,186 @@
+{
+  "info": {
+    "_postman_id": "66ab1552-cdb1-4c87-b4b4-7ca5de1f4754",
+    "name": "CLD 376 - Minikube API Gateway",
+    "description": "Tests the API Gateway, Registration Service, and Login Service deployed on Minikube. Replace gatewayBaseUrl with the URL printed by: minikube service api-gateway-service --url",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gatewayBaseUrl",
+      "value": "http://127.0.0.1:PORT",
+      "type": "string"
+    },
+    {
+      "key": "testEmail",
+      "value": "mary.k8s@example.com",
+      "type": "string"
+    },
+    {
+      "key": "testPassword",
+      "value": "Mary123",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Gateway Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{gatewayBaseUrl}}/health",
+          "host": [
+            "{{gatewayBaseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Checks whether the API Gateway is reachable through its Minikube NodePort Service."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Gateway is healthy', function () {",
+              "  const response = pm.response.json();",
+              "  pm.expect(response.status).to.eql('healthy');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Register User Through Gateway",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const uniqueEmail = `mary.k8s.${Date.now()}@example.com`;",
+              "pm.collectionVariables.set('testEmail', uniqueEmail);",
+              "console.log('Registering test user:', uniqueEmail);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('User registration succeeded', function () {",
+              "  const response = pm.response.json();",
+              "  pm.expect(response.message).to.eql('User registered successfully');",
+              "  pm.expect(response.user.email).to.eql(pm.collectionVariables.get('testEmail'));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Loeung Chhumso Mary\",\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\",\n  \"phone\": \"012345678\",\n  \"role\": \"user\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{gatewayBaseUrl}}/register/userregister",
+          "host": [
+            "{{gatewayBaseUrl}}"
+          ],
+          "path": [
+            "register",
+            "userregister"
+          ]
+        },
+        "description": "Creates a new user through the API Gateway. A unique email is generated automatically before this request."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Login Through Gateway",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Login succeeded and returned a token', function () {",
+              "  const response = pm.response.json();",
+              "  pm.expect(response.message).to.eql('Login successful');",
+              "  pm.expect(response.token).to.be.a('string').and.not.empty;",
+              "  pm.collectionVariables.set('accessToken', response.token);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\",\n  \"role\": \"user\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{gatewayBaseUrl}}/auth/login",
+          "host": [
+            "{{gatewayBaseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Logs in with the user created by request 2 and saves the returned JWT as accessToken."
+      },
+      "response": []
+    }
+  ]
+}
