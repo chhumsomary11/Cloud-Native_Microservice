@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Student Management Final Lab",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gatewayUrl", "value": "http://127.0.0.1:30080" }
+  ],
+  "item": [
+    {
+      "name": "Register Student through Gateway",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"student_id\": \"STU001\",\n  \"student_name\": \"Loeung Chhumso Mary\",\n  \"student_mobile\": \"012345678\",\n  \"student_email\": \"mary@example.com\",\n  \"student_password\": \"Password123\"\n}"
+        },
+        "url": "{{gatewayUrl}}/api/students/register"
+      }
+    },
+    {
+      "name": "Login through Gateway",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"student_email\": \"mary@example.com\",\n  \"student_password\": \"Password123\"\n}"
+        },
+        "url": "{{gatewayUrl}}/api/students/login"
+      }
+    }
+  ]
+}

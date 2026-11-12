@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-registration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-registration
+  template:
+    metadata:
+      labels:
+        app: gateway-registration
+    spec:
+      containers:
+        - name: api-gateway
+          image: danan22/student-api-gateway:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          env:
+            - name: REGISTRATION_SERVICE_URL
+              value: http://localhost:5001
+            - name: LOGIN_SERVICE_URL
+              value: http://login-service:5002
+        - name: registration-service
+          image: danan22/student-registration-service:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5001
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: student-app-secrets
+                  key: MONGODB_URI
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login
+  template:
+    metadata:
+      labels:
+        app: login
+    spec:
+      containers:
+        - name: login-service
+          image: danan22/student-login-service:v2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5002
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: student-app-secrets
+                  key: MONGODB_URI
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: student-app-secrets
+                  key: JWT_SECRET

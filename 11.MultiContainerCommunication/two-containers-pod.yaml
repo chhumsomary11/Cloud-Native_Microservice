@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: two-containers-pods
+spec:
+  restartPolicy: Never
+  # Note: Volumes
+  volumes:
+    - name: shared-data
+      emptyDir: {}
+
+  # Note: Containers using images from the official Docker Hub registry
+  containers:
+    - name: nginx-container
+      image: nginx:latest
+      volumeMounts:
+        - name: shared-data
+          mountPath: /usr/share/nginx/html
+    - name: debian-container
+      image: debian:latest
+      volumeMounts:
+        - name: shared-data
+          mountPath: /shared-dir
+      command: ["/bin/sh", "-c"]
+      args:
+        - while true; do date >> /shared-dir/index.html; sleep 60; done

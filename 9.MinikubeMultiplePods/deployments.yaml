@@ -13,24 +13,30 @@ spec:
         app: gateway-login
     spec:
       containers:
+        # Purpose: This deployment manages the API gateway pod
         - name: api-gateway
+          #Note: Image we take from docker hub
           image: danan22/api-gateway:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 4000
+
+          # Note: env we need to provide to the API gateway pod so that it can access the login and registration services
           env:
             - name: PORT
               value: "4000"
             - name: LOGIN_SERVICE_URL
               value: "http://localhost:5002"
             - name: REGISTRATION_SERVICE_URL
+
+              # Note:  this service resides in different pod, so we need to use the service name and port to access it
               value: "http://registration-service:5001"
             - name: JWT_SECRETE
               valueFrom:
                 secretKeyRef:
                   name: identity-secrets
                   key: JWT_SECRETE
-
+        # Purpose: This deployment manages the login service pod
         - name: login-service
           image: danan22/login-service:v1
           imagePullPolicy: Always

@@ -1,0 +1,29 @@
+services:
+  api-gateway:
+    build: ./api-gateway
+    image: danan22/student-api-gateway:v1
+    container_name: student-api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      REGISTRATION_SERVICE_URL: http://registration-service:5001
+      LOGIN_SERVICE_URL: http://login-service:5002
+    depends_on:
+      - registration-service
+      - login-service
+
+  registration-service:
+    build: ./registration-service
+    image: danan22/student-registration-service:v1
+    container_name: student-registration-service
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+
+  login-service:
+    build: ./login-service
+    image: danan22/student-login-service:v1
+    container_name: student-login-service
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}

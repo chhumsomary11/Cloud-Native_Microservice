@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-version-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    #Note: Hostname is used to access the ingress, so we need to add this hostname in /etc/hosts file
+    - host: chandan.com
+      http:
+        paths:
+          - path: /v1
+            pathType: Prefix
+            backend:
+              service:
+                name: app1-service
+                port:
+                  number: 8000
+          - path: /v2
+            pathType: Prefix
+            backend:
+              service:
+                name: app2-service
+                port:
+                  number: 8000
